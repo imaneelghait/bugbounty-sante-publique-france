@@ -26,7 +26,7 @@ Aucune création de compte sur `www.tabac-info-service.fr` : l'inscription « Mo
 | Fonctionnalité | Intérêt | Testée | Notes |
 |---|---|---|---|
 | Recherche principale (`/resultats-de-recherche`, `search_form[search_text]`, GET) | élevé | ☑ | `< > " '` échappés — pas de XSS démontrée (2026-11-02) |
-| Autocomplétion de la recherche | élevé | ☐ | point d'entrée à identifier |
+| Autocomplétion des articles (`/autocomplete/article/<texte>`) | élevé | ☑ | Testée le 2026-11-09 avec Burp : entrée non reflétée, réponse JSON, aucune XSS démontrée. Autocomplétion des questions non testée. |
 | Recherche de tabacologue (`/je-trouve-un-tabacologue`) | élevé | ☐ | champ adresse + liste de régions ; carte Google Maps hors périmètre |
 | Inscription « Mois sans tabac » | — | ☐ | redirige hors périmètre, non testé |
 | Espace Pro | — | ☐ | réservé aux professionnels, non testé |
