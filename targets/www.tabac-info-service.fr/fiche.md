@@ -10,10 +10,11 @@
 
 | Couche | Détail |
 |---|---|
-| Serveur | à identifier |
-| Framework | à identifier |
-| CDN / WAF | à identifier |
-| Auth | aucun compte utilisateur sur cet hôte |
+| Serveur | Apache/Debian (observé le 2026-11-09) |
+| Framework / CMS | Ibexa CMS, PHP/Symfony |
+| Cache / reverse proxy | Varnish (observé) |
+| CDN / WAF | Non confirmé |
+| Auth | Aucun compte utilisateur sur cet hôte |
 | Services tiers | Google Maps (hors périmètre), TrustCommander (consentement cookies) |
 
 ## Comptes de test
