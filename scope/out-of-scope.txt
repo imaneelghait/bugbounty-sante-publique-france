@@ -1,7 +1,6 @@
-# Périmètre INTERDIT — l'exclusion l'emporte toujours sur l'inclusion.
-# Source : <url de la policy>   Dernière vérification : AAAA-MM-JJ
-#
-# Exemples (à supprimer) :
-# blog.exemple.com
-# *.corp.exemple.com
-# status.exemple.com
+# Rappel : tout hôte absent de in-scope.txt est hors périmètre
+# Exclusions relevées pendant la reconnaissance (06/11/2026)
+santepubliquefrance.fr
+mois-sans-tabac.tabac-info-service.fr
+maps.googleapis.com
+# À confirmer avant tout test : www.mangerbouger.fr (la fiche liste mangerbouger.fr sans www)
