@@ -1,7 +1,11 @@
-# Périmètre AUTORISÉ — programme : <nom>
-# Source : <url de la policy>   Dernière vérification : AAAA-MM-JJ
-#
-# Exemples (à supprimer) :
-# *.exemple.com
-# api.exemple.com
-# exemple.fr
+# Programme Santé publique France — YesWeHack
+# Source : fiche du programme, consultée le 06/11/2026
+# Aucun wildcard : correspondance exacte uniquement
+www.tabac-info-service.fr
+mangerbouger.fr
+sso.mangerbouger.fr
+www.onsexprime.fr
+www.1000-premiers-jours.fr
+vaccination-info-service.fr
+professionnels.vaccination-info-service.fr
+www.vivre-avec-la-chaleur.fr
