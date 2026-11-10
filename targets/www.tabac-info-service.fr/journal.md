@@ -22,7 +22,7 @@ Une entrée par session. Sert de preuve de bonne foi et de mémoire de travail.
 ### Prochaine étape
 - Étudier l'autocomplétion de la recherche.
 
-## 2026-11-06 — ≈ 22:20 à 22:55 (Imane)
+## 2026-11-06 — ≈ 22:20 à 22:55
 
 **Périmètre du jour :** `www.tabac-info-service.fr` (navigation, aucune charge de test)
 
@@ -37,7 +37,7 @@ Une entrée par session. Sert de preuve de bonne foi et de mémoire de travail.
 - « Je télécharge l'application » : application mobile, hors périmètre.
 - Point d'entrée repéré : `/je-trouve-un-tabacologue` (champ « Adresse, ville ou département » + liste de régions).
 - Requêtes vers `maps.googleapis.com` (carte Google Maps) : service tiers, hors périmètre.
-## 2026-11-09 — ≈ 21:00 à 21:30 (Imane)
+## 2026-11-09 — ≈ 21:00 à 21:30 
 
 **Périmètre du jour :** `www.tabac-info-service.fr`, reconnaissance et test de l'autocomplétion
 
@@ -62,3 +62,22 @@ Une entrée par session. Sert de preuve de bonne foi et de mémoire de travail.
 
 ### Prochaine étape
 - Reconnaissance applicative : technologies, fichiers JavaScript, `robots.txt`, `sitemap.xml`, autocomplétion.
+## 2026-11-10 — ≈ 17:00 à 17:35 
+
+**Périmètre du jour :** `www.tabac-info-service.fr`, page `/questions-reponses`, paramètres `theme` et `page`
+
+### Fait
+- Reprise de la piste ouverte par Melissa (réflexion du paramètre `theme`).
+- Caractérisation caractère par caractère dans Repeater : `<` → `%3C`, `>` → `%3E`, `'` → `%27` (200) ; `"` → erreur 500.
+- Voir analyse 04.
+
+### Observations
+- Le paramètre `theme` est reflété dans l'attribut `data-target`, mais les caractères dangereux sont encodés en URL et le `"` provoque un 500.
+- Pages d'erreur 500 génériques, sans fuite d'information.
+
+### Impasses (ne pas refaire)
+- Paramètres `theme` et `page` de `/questions-reponses` : écartés pour la XSS réfléchie.
+
+### Prochaine étape
+- Tester la recherche de tabacologue (`/je-trouve-un-tabacologue`).
+- Décider : poursuivre tabac-info-service, ou ouvrir Mangerbouger (plan B) si le périmètre est confirmé.
