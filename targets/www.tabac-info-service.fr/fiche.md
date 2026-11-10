@@ -28,8 +28,8 @@ Aucune création de compte sur `www.tabac-info-service.fr` : l'inscription « Mo
 | Recherche principale (`/resultats-de-recherche`, `search_form[search_text]`, GET) | élevé | ☑ | `< > " '` échappés — pas de XSS démontrée (2026-11-02) |
 | Autocomplétion des articles (`/autocomplete/article/<texte>`) | élevé | ☑ | Testée le 2026-11-09 avec Burp : entrée non reflétée, réponse JSON, aucune XSS démontrée. Autocomplétion des questions non testée. |
 | Recherche de tabacologue (`/je-trouve-un-tabacologue`) | élevé | ☑ | champ adresse + liste de régions ; carte Google Maps hors périmètre |
-| Inscription « Mois sans tabac » | — | ☐ | redirige hors périmètre, non testé |
-| Espace Pro | — | ☐ | réservé aux professionnels, non testé |
+| Inscription « Mois sans tabac » | — | — | Hors périmètre : redirige vers `mois-sans-tabac.tabac-info-service.fr` |
+| Espace Pro | — | — | Hors périmètre : sous-domaine `pro.tabac-info-service.fr` |
 
 ## Pistes à creuser
 
