@@ -81,3 +81,17 @@ Une entrée par session. Sert de preuve de bonne foi et de mémoire de travail.
 ### Prochaine étape
 - Tester la recherche de tabacologue (`/je-trouve-un-tabacologue`).
 - Décider : poursuivre tabac-info-service, ou ouvrir Mangerbouger (plan B) si le périmètre est confirmé.
+
+## 2026-11-10 (suite) — recherche de tabacologue
+
+**Périmètre du jour :** `www.tabac-info-service.fr/je-trouve-un-tabacologue`
+
+### Fait
+- Test de la recherche par ville (« Caen »).
+
+### Observations
+- La recherche est traitée par Google Maps : requête vers `maps.googleapis.com/maps/api/js/GeocodeService.Search?...Caen...`, et non vers le site.
+- Aucun paramètre de recherche n'est envoyé à `www.tabac-info-service.fr`.
+
+### Impasses (ne pas refaire)
+- Recherche de tabacologue : repose sur Google Maps (tiers hors périmètre), aucun point d'entrée dans le périmètre à tester.
