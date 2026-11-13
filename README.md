@@ -1,9 +1,9 @@
 # Bug Bounty — Santé publique France
 
-**Projet Master 2 Cybersécurité — Université de Caen Normandie**
-**Binôme (groupe 4) :** Imane EL GHAIT & Melissa GUERAOUNI
-**Programme :** [Santé Publique France — YesWeHack](https://yeswehack.com/programs/sante-publique-france-bugbounty-public-program)
-**Période :** novembre 2026
+- **Projet Master 2 Cybersécurité — Université de Caen Normandie**
+- **Binôme (groupe 4) :** Imane EL GHAIT & Melissa GUERAOUNI
+- **Programme :** [Santé Publique France — YesWeHack](https://yeswehack.com/programs/sante-publique-france-bugbounty-public-program)
+- **Période :** novembre 2026
 
 > Ce dépôt est notre **carnet de travail** : notes, analyses, journal et preuves au fil de l'eau.
 > Le **rapport** est le livrable principal et se lit indépendamment de ce dépôt.
