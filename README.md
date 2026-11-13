@@ -31,15 +31,20 @@ Aucune vulnérabilité retenue. Les points d'entrée testés sont correctement p
 ## Organisation du dépôt
 
 - `scope/` — périmètre (`in-scope.txt`, `out-of-scope.txt`) et règles (`regles.md`)
-- `targets/www.tabac-info-service.fr/` — la cible :
+- `targets/www.tabac-info-service.fr/` — **cible principale** :
   - `fiche.md` — carte d'identité et surface d'attaque
   - `journal.md` — journal de bord, une entrée par séance
   - `checklist-web.md` — checklist de test
   - `notes/` — analyses détaillées (00 à 04)
   - `evidences/` — captures d'écran des tests clés
+- `targets/mangerbouger.fr/` — **cible secondaire (plan B, reconnaissance uniquement)** :
+  - `fiche.md`, `notes/00-observation-plan-b.md`, `evidences/` captures de (maintenance + redirection 301)
+  - non testée activement : maintenance de sécurité en cours et périmètre `www.` non confirmé
+- `findings/` — cycle de vie des vulnérabilités ; **vide** (aucune retenue) — voir `findings/STATUT.md`
+- `scripts/` — scripts d'automatisation fournis par l'encadrant, **non utilisés** : le programme interdit les outils automatisés (travail mené manuellement au navigateur + Burp Suite)
 - `docs/`, `templates/` — méthodologie et modèles fournis par l'encadrant
 
-## Notes d'analyse
+## Notes d'analyse (cible principale)
 
 - [00 — Environnement de travail](targets/www.tabac-info-service.fr/notes/00-environnement.md)
 - [01 — Choix de la cible et de la classe](targets/www.tabac-info-service.fr/notes/01-choix-de-la-classe.md)
