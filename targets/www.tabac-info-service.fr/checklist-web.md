@@ -1,74 +1,83 @@
 # Checklist web — www.tabac-info-service.fr
 
 Copie de `docs/02-checklist-web.md`.
-Coche au fur et à mesure. Une case non cochée = zone non testée, pas zone saine.
+Règle : une case non cochée = zone non testée, pas zone saine.
+
+> **Contexte.** Le projet a porté sur **une classe** (XSS réfléchie) sur une cible **sans authentification**. Les sections Authentification, Session et une grande partie des injections restent donc non cochées : non applicables ou hors de la classe choisie. Détails dans les notes 02 à 05.
 
 ## Reconnaissance applicative
-- [ ] Technologies identifiées (serveur, framework, CDN, WAF)
-- [ ] Fichiers JS téléchargés et lus (endpoints, clés, feature flags, commentaires)
-- [ ] `robots.txt`, `sitemap.xml`, `.well-known/`, `/swagger`, `/graphql`, `/actuator`
-- [ ] Sous-domaines et environnements annexes (dev, staging, preprod, uat)
-- [ ] Répertoires exposés : `.git/`, `.env`, `backup/`, `.DS_Store`, dumps SQL
-- [ ] Messages d'erreur verbeux, stack traces, pages de debug
+- [x] Technologies identifiées (serveur, framework, CDN, WAF) — Apache/Debian, Ibexa (Symfony), cache Varnish ; WAF non identifié
+- [ ] Fichiers JS téléchargés et lus — non approfondi
+- [ ] `robots.txt`, `sitemap.xml`, `.well-known/`, `/swagger`, `/graphql`, `/actuator` — non testé
+- [x] Sous-domaines et environnements annexes — identifiés : `mois-sans-tabac.`, `pro.` (hors périmètre)
+- [ ] Répertoires exposés : `.git/`, `.env`, `backup/`, `.DS_Store`, dumps SQL — non testé
+- [x] Messages d'erreur verbeux, stack traces, pages de debug — erreurs 500 observées, **génériques, sans fuite d'information**
 
 ## Authentification
-- [ ] Énumération d'utilisateurs (messages ou temps de réponse différents)
-- [ ] Politique de mot de passe, verrouillage, rate limiting sur le login
-- [ ] Reset de mot de passe : token prévisible, non expiré, réutilisable, fuite via Referer/Host header
-- [ ] MFA : contournable, code brute-forçable, non exigé sur certains flux
-- [ ] OAuth / SSO : `redirect_uri` laxiste, `state` absent, fuite de code, account linking abusif
-- [ ] JWT : `alg: none`, HS/RS confusion, signature non vérifiée, clé faible, absence d'expiration
+*Non applicable : aucun compte utilisateur sur `www.tabac-info-service.fr`.*
+- [ ] Énumération d'utilisateurs
+- [ ] Politique de mot de passe, verrouillage, rate limiting
+- [ ] Reset de mot de passe
+- [ ] MFA
+- [ ] OAuth / SSO
+- [ ] JWT
 
 ## Session
-- [ ] Attributs des cookies (`HttpOnly`, `Secure`, `SameSite`)
-- [ ] Session non invalidée à la déconnexion / au changement de mot de passe
+*Non applicable : pas de session authentifiée sur cet hôte.*
+- [ ] Attributs des cookies
+- [ ] Session non invalidée
 - [ ] Session fixation
-- [ ] Plusieurs sessions concurrentes non révoquées
+- [ ] Sessions concurrentes
 
-## Contrôle d'accès — le plus rentable
-- [ ] IDOR : remplacer un identifiant par celui d'un autre compte (créer 2 comptes de test)
-- [ ] Élévation verticale : appeler un endpoint admin avec un compte utilisateur
-- [ ] Élévation horizontale entre tenants / organisations
-- [ ] Contrôle uniquement côté client (bouton caché mais endpoint ouvert)
-- [ ] Changement de méthode HTTP (`GET`→`POST`, `PUT`, `PATCH`, `DELETE`)
-- [ ] Contournement de chemin : `//admin`, `/admin/.`, `%2e%2e`, casse, encodage
+## Contrôle d'accès
+*Non applicable : pas de compte, contenu entièrement public (voir note 05).*
+- [ ] IDOR
+- [ ] Élévation verticale
+- [ ] Élévation horizontale
+- [ ] Contrôle uniquement côté client
+- [ ] Changement de méthode HTTP
+- [ ] Contournement de chemin
 
 ## Injections
-- [ ] SQL / NoSQL (paramètres, en-têtes, JSON, ordre de tri, filtres)
+*Hors de la classe choisie — non testé.*
+- [ ] SQL / NoSQL
 - [ ] Injection de commandes OS
-- [ ] Injection de template côté serveur (SSTI)
-- [ ] LDAP, XPath, injection d'en-têtes / CRLF
-- [ ] Désérialisation non sécurisée
+- [ ] SSTI
+- [ ] LDAP, XPath, CRLF
+- [ ] Désérialisation
 
 ## XSS et injections côté client
-- [ ] Réfléchie, stockée, DOM-based (`innerHTML`, `location.hash`, `postMessage`)
-- [ ] Contournement de la CSP / absence de CSP
-- [ ] Upload de fichier rendu en HTML ou SVG
-- [ ] `target=_blank` sans `noopener`, open redirect chaînable
+- [x] Réfléchie, stockée, DOM-based — **XSS réfléchie testée sur 5 points d'entrée** (notes 02-04) ; stockée et DOM-based non testées
+- [ ] Contournement de la CSP / absence de CSP — non testé
+- [ ] Upload de fichier rendu en HTML ou SVG — pas de fonctionnalité d'upload testée
+- [ ] `target=_blank` sans `noopener`, open redirect — non testé
 
 ## Logique métier
-- [ ] Manipulation du prix, de la quantité, de la devise, d'une remise
-- [ ] Étapes d'un tunnel sautées ou rejouées
-- [ ] Valeurs négatives, très grandes, décimales, unicode
-- [ ] Race conditions (double dépense, double usage d'un coupon)
-- [ ] Absence de rate limit sur une action coûteuse (SMS, e-mail, export)
+*Hors de la classe choisie — non testé.*
+- [ ] Manipulation prix / quantité / remise
+- [ ] Étapes de tunnel sautées
+- [ ] Valeurs limites
+- [ ] Race conditions
+- [ ] Absence de rate limit sur action coûteuse
 
 ## Côté serveur
-- [ ] SSRF (webhooks, import d'URL, génération de PDF, prévisualisation de lien)
+*Hors de la classe choisie — non testé.*
+- [ ] SSRF
 - [ ] Inclusion / traversée de fichiers
-- [ ] XXE (XML, DOCX, SVG, SOAP)
-- [ ] Upload : type, extension double, magic bytes, chemin d'écriture, exécution
-- [ ] Request smuggling, empoisonnement de cache, cache d'en-têtes
+- [ ] XXE
+- [ ] Upload
+- [ ] Request smuggling, cache poisoning
 
 ## Configuration
-- [ ] CORS permissif (`Access-Control-Allow-Origin` reflété + `credentials: true`)
-- [ ] En-têtes de sécurité (HSTS, `X-Content-Type-Options`, `Content-Security-Policy`)
-- [ ] Prise de contrôle de sous-domaine (CNAME orphelin)
-- [ ] Identifiants par défaut sur les interfaces d'admin
-- [ ] Versions vulnérables connues (CVE) confirmées **manuellement**
+- [ ] CORS permissif — non testé
+- [ ] En-têtes de sécurité — observés (HSTS présent) mais non retenus (non récompensés par le programme)
+- [ ] Prise de contrôle de sous-domaine — non testé
+- [ ] Identifiants par défaut — non testé
+- [ ] Versions vulnérables connues (CVE) — non testé
 
 ## Avant de rapporter
-- [ ] Reproduit deux fois, depuis une session propre
-- [ ] Impact métier formulé en une phrase
+*Non applicable : aucune vulnérabilité retenue.*
+- [ ] Reproduit deux fois
+- [ ] Impact métier formulé
 - [ ] Preuves caviardées et horodatées
-- [ ] Vérifié hors de la liste des vulnérabilités exclues du programme
+- [ ] Vérifié hors de la liste des exclusions
