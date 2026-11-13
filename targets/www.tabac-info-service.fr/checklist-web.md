@@ -30,7 +30,7 @@ Règle : une case non cochée = zone non testée, pas zone saine.
 - [ ] Sessions concurrentes
 
 ## Contrôle d'accès
-*Non applicable : pas de compte, contenu entièrement public (voir note 05).*
+*Non applicable sur cette cible (pas de compte, contenu entièrement public). Classe IDOR envisagée sur la cible secondaire — voir `targets/mangerbouger.fr/notes/00-observation-plan-b.md`.*
 - [ ] IDOR
 - [ ] Élévation verticale
 - [ ] Élévation horizontale
