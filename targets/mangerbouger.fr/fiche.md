@@ -1,87 +1,204 @@
-# Fiche cible — mangerbouger.fr (cible secondaire / plan B)
 
-- **Programme :** Santé publique France (YesWeHack)
-- **Hôtes dans le périmètre :** `mangerbouger.fr`, `sso.mangerbouger.fr`
-- **`www.mangerbouger.fr` :** périmètre non confirmé
-- **Statut :** reconnaissance et vérifications manuelles sur `sso.mangerbouger.fr`
-- **Classes étudiées :** IDOR / contrôle d'accès (CWE-284 / CWE-639), CSRF (CWE-352), authentification et récupération de compte (Keycloak)
-- **Résultat :** aucune vulnérabilité confirmée
+# Fiche cible — Manger Bouger
 
-## Pourquoi cette cible était un plan B
+**Programme :** Santé publique France — YesWeHack  
+**Cible secondaire :** Manger Bouger  
+**Étudiantes :** Imane EL GHAIT et Melissa GUERAOUNI  
+**Période :** Novembre 2026  
+**Statut :** Investigation terminée — aucune vulnérabilité confirmée
 
-1. Une maintenance liée à la sécurité était signalée sur Manger Bouger.
-2. L'appartenance de `www.mangerbouger.fr` au périmètre n'était pas confirmée.
-3. Le sous-domaine `sso.mangerbouger.fr` était explicitement autorisé et permettait d'observer le fonctionnement de l'authentification.
+## 1. Périmètre
 
-## Technologies observées
+Les hôtes suivants figurent dans le périmètre du programme :
 
-| Élément | Détail |
+- `mangerbouger.fr`
+- `sso.mangerbouger.fr`
+
+Le statut de `www.mangerbouger.fr` n'était pas explicitement confirmé.
+
+Nous avons donc limité les tests actifs d'authentification à `sso.mangerbouger.fr`.
+
+## 2. Pourquoi cette cible ?
+
+Manger Bouger a été étudié comme cible secondaire après les recherches XSS sur Tabac Info Service.
+
+Nous souhaitions explorer deux pistes complémentaires :
+
+- IDOR (CWE-639) : contrôle d'accès aux ressources d'un utilisateur.
+- CSRF (CWE-352) : gestion des sessions et des actions authentifiées.
+
+Plusieurs fonctionnalités du site étaient en maintenance, ce qui a limité les possibilités de test.
+
+## 3. Environnement
+
+**Outils utilisés :**
+
+- Microsoft Edge
+- FoxyProxy
+- Burp Suite Community
+- Burp Repeater
+
+Deux comptes de test avaient été créés avec des alias `+ywhspf`.
+
+Les mots de passe, cookies et valeurs de session sensibles ne sont pas reproduits dans cette fiche.
+
+## 4. Technologies et points d'entrée
+
+| Élément | Observation |
 |---|---|
-| Authentification | `sso.mangerbouger.fr` — Keycloak / OpenID Connect |
-| Données de compte | Pages accessibles depuis `www.mangerbouger.fr` |
-| Redirection | `mangerbouger.fr` → `www.mangerbouger.fr` (HTTP 301) |
-| Parcours d'authentification | `/auth/realms/spf-mb-dev/login-actions/authenticate` |
-| Récupération de compte | `/auth/realms/spf-mb-dev/login-actions/reset-credentials` |
-| Outils | Microsoft Edge, Burp Suite Community, FoxyProxy |
+| Authentification | Keycloak |
+| Protocole | OpenID Connect |
+| Hôte SSO | `sso.mangerbouger.fr` |
+| Authentification | `/auth/realms/spf-mb-dev/login-actions/authenticate` |
+| Autorisation OIDC | `/auth/realms/spf-mb-dev/protocol/openid-connect/auth` |
+| Mot de passe oublié | `/auth/realms/spf-mb-dev/login-actions/reset-credentials` |
+| Retour applicatif observé | `https://www.mangerbouger.fr/login_check` |
 
-## Comptes de test
+La redirection vers `www.mangerbouger.fr` a été observée dans les échanges HTTP, sans test actif sur cet hôte.
 
-Deux comptes de test ont été créés avec des alias `+ywhspf`.
+## 5. Investigation IDOR — CWE-639
 
-Les identifiants, mots de passe, cookies et paramètres de session ne sont pas conservés dans le dépôt Git.
+Nous avons envisagé une vulnérabilité IDOR sur les fonctionnalités liées au compte utilisateur, notamment les favoris.
 
-## Fonctionnalités étudiées
+Cependant :
 
-| Fonctionnalité | Hôte | Analyse | Résultat |
-|---|---|---|---|
-| Favoris | `www.mangerbouger.fr` | IDOR envisagée | Non testée activement, périmètre non confirmé |
-| Connexion | `sso.mangerbouger.fr` | Observation des requêtes HTTP | Fonctionnement observé |
-| Modification d'email | Parcours de gestion de compte Keycloak | Piste CSRF explorée | Non démontrée |
-| Mot de passe oublié | `sso.mangerbouger.fr` | Analyse du formulaire et des réponses HTTP | Aucune vulnérabilité démontrée |
-| Vulnérabilité Keycloak potentielle | `sso.mangerbouger.fr` | Piste CVE-2026-18963 envisagée | Applicabilité non établie, version inconnue |
+- Certaines fonctionnalités étaient en maintenance.
+- Le périmètre de `www.mangerbouger.fr` restait ambigu.
+- Aucun identifiant d'objet directement manipulable n'a été identifié dans l'URL de la page observée.
 
-## Investigations du 13/11/2026
+Nous n'avons pas poursuivi les tests actifs sur ces fonctionnalités.
 
-### 1. Analyse de l'authentification
+**Résultat : aucune IDOR démontrée. Investigation non concluante.**
 
-Nous avons utilisé Burp Suite pour observer les requêtes et réponses HTTP du service d'authentification Keycloak.
+## 6. Investigation Keycloak — 13/11/2026
 
-Les parcours de connexion et de récupération de compte ont été identifiés.
+### Authentification
 
-### 2. Piste CSRF
+Nous avons observé les requêtes HTTP du parcours de connexion avec Burp Suite.
 
-Nous avons étudié le fonctionnement de la modification d'adresse email afin de rechercher une éventuelle absence de protection CSRF.
+Le service utilise Keycloak pour gérer l'authentification.
 
-Les observations n'ont pas permis de démontrer une modification non autorisée.
+### Récupération du mot de passe
 
-**Conclusion :** aucune vulnérabilité CSRF confirmée.
-
-### 3. Récupération du mot de passe
-
-Nous avons étudié le formulaire « Mot de passe oublié » et son fonctionnement.
+Nous avons étudié le formulaire « Mot de passe oublié ».
 
 Observations :
 
-- Le formulaire utilise le parcours `reset-credentials` de Keycloak.
-- Le serveur retourne des réponses HTTP 200.
-- Une demande a affiché un message indiquant qu'un email de réinitialisation devrait être envoyé.
-- Aucun email de réinitialisation n'a été reçu pendant notre vérification.
-- Une tentative de connexion a retourné un message d'identifiants invalides.
+- Formulaire de réinitialisation accessible.
+- Réponses HTTP 200.
+- Message indiquant qu'un courriel d'instructions devrait être reçu.
+- Aucun courriel reçu pendant notre vérification.
+- Message d'identifiants invalides observé lors d'une tentative de connexion.
 
-Ces observations ne permettent pas de conclure à une prise de contrôle de compte ni à une vulnérabilité.
+Aucune réinitialisation non autorisée ni prise de contrôle de compte n'a été démontrée.
 
-### 4. Piste CVE Keycloak
+### Piste CSRF
 
-Nous avons envisagé la piste CVE-2026-18963 en lien avec le mécanisme de récupération de compte.
+Nous avons envisagé une éventuelle vulnérabilité CSRF dans la gestion des comptes et des sessions.
 
-Cependant, la version de Keycloak n'a pas été identifiée et l'applicabilité de cette CVE n'a pas été établie.
+Aucun scénario complet permettant de provoquer une action non autorisée n'a été exécuté.
 
-**Conclusion :** piste clôturée sans vulnérabilité démontrée.
+**Résultat : aucune vulnérabilité CSRF confirmée.**
 
-## Décision finale
+### Piste CVE Keycloak
 
-Les vérifications manuelles réalisées sur `sso.mangerbouger.fr` n'ont révélé aucune vulnérabilité confirmée.
+Une hypothèse de recherche concernant `CVE-2026-18963` a été envisagée.
 
-Les tests IDOR sur les pages de compte de `www.mangerbouger.fr` n'ont pas été poursuivis en raison de l'ambiguïté du périmètre et du contexte de maintenance.
+La version exacte de Keycloak n'a pas été identifiée et l'applicabilité de cette référence n'a pas été établie.
 
-Cette cible reste documentée comme piste secondaire du projet, sans signalement de vulnérabilité sur YesWeHack.
+Cette piste a été clôturée sans vulnérabilité démontrée.
+
+## 7. Analyse des sessions — 14/11/2026
+
+### Parcours normal
+
+Dans l'historique Burp, nous avons observé :
+
+| Requête | Réponse |
+|---|---|
+| GET `/protocol/openid-connect/auth` | HTTP 200 |
+| POST `/login-actions/authenticate` | HTTP 302 |
+
+Lors d'une connexion normale, une redirection vers `/login_check` contenait les paramètres :
+
+- `state`
+- `session_state`
+- `code`
+
+Nous avons également observé les paramètres `session_code`, `execution`, `client_id` et `tab_id`.
+
+Les cookies identifiés comprenaient `AUTH_SESSION_ID`, `AUTH_SESSION_ID_LEGACY` et `KC_RESTART`.
+
+### Modification de session_code
+
+Dans Burp Repeater, nous avons repris une requête POST d'authentification.
+
+Nous avons remplacé le paramètre par :
+
+`session_code=invalid-session-test`
+
+Les identifiants ont également été remplacés par des valeurs fictives.
+
+Une seule requête modifiée a été envoyée.
+
+**Réponse observée :**
+
+- HTTP/2 302.
+- Redirection vers `/login-actions/authenticate`.
+- Nouveau cookie `AUTH_SESSION_ID`.
+- Aucun code d'autorisation observé dans cette réponse.
+
+Plusieurs éléments ayant été modifiés, nous ne pouvons pas attribuer le résultat au seul paramètre `session_code`.
+
+### Comparaison des sessions
+
+Nous avons ouvert l'URL de redirection dans deux contextes :
+
+**Session Edge déjà connectée :**
+
+`Vous êtes déjà connecté`
+
+**Fenêtre Edge InPrivate :**
+
+`cookieNotFoundMessage`
+
+Ces résultats montrent que le contexte de session influence le parcours d'authentification.
+
+Ils ne constituent pas une preuve de vulnérabilité CSRF.
+
+## 8. Synthèse
+
+| Investigation | CWE | Résultat |
+|---|---|---|
+| IDOR | CWE-639 | Non démontrée, tests limités |
+| CSRF | CWE-352 | Non démontrée |
+| Authentification Keycloak | — | Parcours documenté |
+| Récupération de mot de passe | — | Aucune vulnérabilité démontrée |
+| Piste CVE Keycloak | — | Applicabilité non établie |
+
+## 9. Limites
+
+- Aucun scénario CSRF complet n'a été exécuté.
+- Aucun accès non autorisé à des ressources d'un autre utilisateur n'a été démontré.
+- L'effet isolé de `session_code` n'a pas été établi.
+- La maintenance a limité certaines investigations.
+- Aucun test actif n'a été réalisé sur `www.mangerbouger.fr`.
+
+## 10. Documentation
+
+Les détails des investigations sont disponibles dans :
+
+- [Journal de bord](journal.md)
+- [Analyse Keycloak](notes/01-analyse-keycloak.md)
+- [Observations initiales](notes/00-observation-plan-b.md)
+- [Captures et preuves](evidences/)
+
+## 11. Conclusion
+
+L'étude de Manger Bouger nous a permis de découvrir le fonctionnement de Keycloak, d'OpenID Connect et de la gestion des sessions.
+
+Nous avons analysé plusieurs requêtes HTTP, formulé des hypothèses et documenté les résultats.
+
+**Aucune vulnérabilité exploitable n'a été confirmée dans les scénarios étudiés.**
+
+Aucun signalement n'a été soumis sur YesWeHack pour cette cible.
